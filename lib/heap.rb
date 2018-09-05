@@ -13,6 +13,11 @@ class BinaryMinHeap
   end
 
   def extract
+    @store[0], @store[-1] = @store[-1], @store[0]
+    to_return = @store.pop
+
+    BinaryMinHeap.heapify_down(@store, 0, @store.length, &prc)
+    to_return
   end
 
   def peek
@@ -20,7 +25,8 @@ class BinaryMinHeap
   end
 
   def push(val)
-
+    @store.push(val)
+    BinaryMinHeap.heapify_up(@store, @store.length-1, @store.length, &prc)
   end
 
   public
@@ -76,6 +82,20 @@ class BinaryMinHeap
   end
 
   def self.heapify_up(array, child_idx, len = array.length, &prc)
-    
+    prc ||= Proc.new { |i, j| i <=> j }
+    return array if child_idx == 0 
+
+    parent_idx = BinaryMinHeap.parent_index(child_idx)
+    parent = array[parent_idx]
+    child = array[child_idx]
+
+    if prc.call(parent, child) > -1
+      array[parent_idx], array[child_idx] = array[child_idx], array[parent_idx]
+
+      return BinaryMinHeap.heapify_up(array, parent_idx, array.length, &prc)
+    else 
+      return array
+    end
+
   end
 end
