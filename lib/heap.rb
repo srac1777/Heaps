@@ -52,7 +52,8 @@ class BinaryMinHeap
     if children_indices.length == 1
           child = array[children_indices[0]]
           if prc.call(parent, child) > -1 
-            parent, child = child, parent
+            array[parent_idx], array[children_indices[0]] = array[children_indices[0]], array[parent_idx]
+
             return BinaryMinHeap.heapify_down(array, children_indices[0], array.length, &prc)
           else
             return array
