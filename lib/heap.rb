@@ -51,6 +51,7 @@ class BinaryMinHeap
   end
 
   def self.heapify_down(array, parent_idx, len = array.length, &prc)
+    return array if len == 1
     prc ||= Proc.new { |i, j| i <=> j }
     parent = array[parent_idx]
     children_indices = BinaryMinHeap.child_indices(len, parent_idx)
@@ -59,9 +60,10 @@ class BinaryMinHeap
           child = array[children_indices[0]]
           if prc.call(parent, child) > -1 
             array[parent_idx], array[children_indices[0]] = array[children_indices[0]], array[parent_idx]
-
-            return BinaryMinHeap.heapify_down(array, children_indices[0], array.length, &prc)
+          
+            return BinaryMinHeap.heapify_down(array, children_indices[0], len, &prc)
           else
+          
             return array
           end
     elsif children_indices.length == 0
@@ -71,18 +73,21 @@ class BinaryMinHeap
           child2 = array[children_indices[1]]
           if prc.call(child1, child2) > -1
             array[parent_idx], array[children_indices[1]] = array[children_indices[1]], array[parent_idx]
-            return BinaryMinHeap.heapify_down(array, children_indices[1], array.length, &prc)
+          
+            return BinaryMinHeap.heapify_down(array, children_indices[1], len, &prc)
           else 
             array[parent_idx], array[children_indices[0]] = array[children_indices[0]], array[parent_idx]
-            return BinaryMinHeap.heapify_down(array, children_indices[0], array.length, &prc)
+          
+            return BinaryMinHeap.heapify_down(array, children_indices[0], len, &prc)
 
           end
     end
-  
+    
   end
 
   def self.heapify_up(array, child_idx, len = array.length, &prc)
     prc ||= Proc.new { |i, j| i <=> j }
+    return array if len == 1
     return array if child_idx == 0 
 
     parent_idx = BinaryMinHeap.parent_index(child_idx)
